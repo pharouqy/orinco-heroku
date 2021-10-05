@@ -144,7 +144,7 @@ function sendDataToApi() {
       lastNameInput.value.toString().trim() &&
       validateEmail(emailInput.value).toString().trim() &&
       cityInput.value.toString().trim() &&
-      emailInput.value.toString().trim() && arrayData !== []
+      emailInput.value.toString().trim() && arrayData != []
     ) {
       //create the object to send
       let objectToSend = {
