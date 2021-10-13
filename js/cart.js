@@ -138,7 +138,7 @@ function validateEmail(email) {
 }
 
 function sendDataToApi() {
-  if (arrayData !== []) {
+  if (arrayData !== [""]) {
     submitInput.addEventListener("click", function (e) {
       if (
         firstNameInput.value.toString().trim() &&
