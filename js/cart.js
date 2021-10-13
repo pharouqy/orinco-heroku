@@ -120,7 +120,7 @@ function clearItem() {
   }
 }
 if (arrayData === []) {
-  localStorage.clear();
+  localStorage.removeItem("data");
   erreurDisplay.innerHTML = `<h1>le panier est vide choisissez des produits pour valider votre commande</h1>`;
 }
 function clearStorage() {
