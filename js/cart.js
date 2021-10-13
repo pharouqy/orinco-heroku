@@ -144,7 +144,7 @@ function sendDataToApi() {
       lastNameInput.value.toString().trim() &&
       validateEmail(emailInput.value).toString().trim() &&
       cityInput.value.toString().trim() &&
-      emailInput.value.toString().trim() && arrayData != null
+      emailInput.value.toString().trim() && arrayData != null && arrayData !== []
     ) {
       //create the object to send
       let objectToSend = {
@@ -184,7 +184,7 @@ function sendDataToApi() {
         });
     } else if (!validateEmail(emailInput.value)) {
       erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp en vérifiant le bon format d'email</h1>`;
-    } else if (arrayData == [] || arrayData == null) {
+    } else if (arrayData === [] || arrayData == null) {
       erreurDisplay.innerHTML = `<h1>le panier est vide choisissez des produits pour valider votre commande</h1>`;
     } else {
       erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp</h1>`;
