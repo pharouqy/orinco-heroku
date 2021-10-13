@@ -115,14 +115,13 @@ function clearItem() {
       arrayData = arrayData.filter((el) => el.name !== nameDelete); //retourne un tableau des elements qui ne corespondent pas a nameDelete
       //mettre le tableau retourner dans le local storage encore une fois
       localStorage.setItem("data", JSON.stringify(arrayData));
-      if (arrayData === []) {
-        localStorage.clear();
-      }
       window.location.href = "cart.html";
     });
   }
 }
-
+if (arrayData === []) {
+  localStorage.clear();
+}
 function clearStorage() {
   //clear localstorage
   if (document.getElementById("X") != null) {
