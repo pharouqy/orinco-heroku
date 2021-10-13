@@ -112,7 +112,7 @@ function clearItem() {
       let nameDelete = arrayData[i].name;
       console.log(nameDelete);
       //utiliser la methode filter qui boucle sur l'array et retourne un tableau des element a ne pas supprimer
-      arrayData = arrayData.filter((el) => el.name !== nameDelete);//retourne un tableau des elements qui ne corespondent pas a nameDelete
+      arrayData = arrayData.filter((el) => el.name !== nameDelete); //retourne un tableau des elements qui ne corespondent pas a nameDelete
       //mettre le tableau retourner dans le local storage encore une fois
       localStorage.setItem("data", JSON.stringify(arrayData));
       window.location.href = "cart.html";
@@ -138,56 +138,61 @@ function validateEmail(email) {
 }
 
 function sendDataToApi() {
-  submitInput.addEventListener("click", function (e) {
-    if (
-      firstNameInput.value.toString().trim() &&
-      lastNameInput.value.toString().trim() &&
-      validateEmail(emailInput.value).toString().trim() &&
-      cityInput.value.toString().trim() &&
-      emailInput.value.toString().trim() && arrayData != null && arrayData !== []
-    ) {
-      //create the object to send
-      let objectToSend = {
-        contact: {
-          firstName: firstNameInput.value,
-          lastName: lastNameInput.value,
-          address: adressInput.value,
-          city: cityInput.value,
-          email: emailInput.value,
-        },
-        products: tableOfIds,
-      };
-      let jsonOrder = JSON.stringify(objectToSend);
-      erreurDisplay.innerHTML = ``;
-      fetch("https://intense-dawn-49463.herokuapp.com/api/teddies/order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(objectToSend),
-      })
-        .then(function (res) {
-          if (res.ok) {
-            return res.json();
-          }
+  if (arrayData !== []) {
+    submitInput.addEventListener("click", function (e) {
+      if (
+        firstNameInput.value.toString().trim() &&
+        lastNameInput.value.toString().trim() &&
+        validateEmail(emailInput.value).toString().trim() &&
+        cityInput.value.toString().trim() &&
+        emailInput.value.toString().trim() &&
+        arrayData != null
+      ) {
+        //create the object to send
+        let objectToSend = {
+          contact: {
+            firstName: firstNameInput.value,
+            lastName: lastNameInput.value,
+            address: adressInput.value,
+            city: cityInput.value,
+            email: emailInput.value,
+          },
+          products: tableOfIds,
+        };
+        let jsonOrder = JSON.stringify(objectToSend);
+        erreurDisplay.innerHTML = ``;
+        fetch("https://intense-dawn-49463.herokuapp.com/api/teddies/order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(objectToSend),
         })
-        .then((value) => {
-          localStorage.clear();
-          const orderId = localStorage.setItem("orderId", value.orderId);
-          localStorage.setItem("firstName", value.contact["firstName"]);
-          localStorage.setItem("lastName", value.contact["lastName"]);
-          const idRetrieve = localStorage.getItem("orderId");
-          window.location.href = `confirm.html?order=${idRetrieve}`;
-        })
-        .catch(function (erreur) {
-          console.log(erreur);
-        });
-    } else if (!validateEmail(emailInput.value)) {
-      erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp en vérifiant le bon format d'email</h1>`;
-    } else if (arrayData === [] || arrayData == null) {
-      erreurDisplay.innerHTML = `<h1>le panier est vide choisissez des produits pour valider votre commande</h1>`;
-    } else {
-      erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp</h1>`;
-    }
-  });
+          .then(function (res) {
+            if (res.ok) {
+              return res.json();
+            }
+          })
+          .then((value) => {
+            localStorage.clear();
+            const orderId = localStorage.setItem("orderId", value.orderId);
+            localStorage.setItem("firstName", value.contact["firstName"]);
+            localStorage.setItem("lastName", value.contact["lastName"]);
+            const idRetrieve = localStorage.getItem("orderId");
+            window.location.href = `confirm.html?order=${idRetrieve}`;
+          })
+          .catch(function (erreur) {
+            console.log(erreur);
+          });
+      } else if (!validateEmail(emailInput.value)) {
+        erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp en vérifiant le bon format d'email</h1>`;
+      } else if (arrayData === [] || arrayData == null) {
+        erreurDisplay.innerHTML = `<h1>le panier est vide choisissez des produits pour valider votre commande</h1>`;
+      } else {
+        erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp</h1>`;
+      }
+    });
+  } else {
+    erreurDisplay.innerHTML = `<h1>le panier est vide choisissez des produits pour valider votre commande</h1>`;
+  }
 }
