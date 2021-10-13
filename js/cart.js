@@ -189,11 +189,11 @@ function sendDataToApi() {
           });
       } else if (!validateEmail(emailInput.value)) {
         erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp en vérifiant le bon format d'email</h1>`;
-      } else if (arrayData === [] || arrayData == null) {
-        erreurDisplay.innerHTML = `<h1>le panier est vide choisissez des produits pour valider votre commande</h1>`;
       } else {
         erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp</h1>`;
       }
+    } else {
+      erreurDisplay.innerHTML = `<h1>le panier est vide choisissez des produits pour valider votre commande</h1>`;
     }
   });
 }
