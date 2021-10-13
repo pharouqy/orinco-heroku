@@ -138,8 +138,8 @@ function validateEmail(email) {
 }
 
 function sendDataToApi() {
-  if (arrayData !== [""]) {
-    submitInput.addEventListener("click", function (e) {
+  submitInput.addEventListener("click", function (e) {
+    if (arrayData !== []) {
       if (
         firstNameInput.value.toString().trim() &&
         lastNameInput.value.toString().trim() &&
@@ -191,8 +191,6 @@ function sendDataToApi() {
       } else {
         erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp</h1>`;
       }
-    });
-  } else {
-    erreurDisplay.innerHTML = `<h1>le panier est vide choisissez des produits pour valider votre commande</h1>`;
-  }
+    }
+  });
 }
