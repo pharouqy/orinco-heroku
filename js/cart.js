@@ -179,7 +179,7 @@ function validateEmail(email) {
 
 function sendDataToApi() {
   submitInput.addEventListener("click", function (e) {
-    if (localStorage.getItem("data") == "[]") {
+    if (localStorage.getItem("data") != "[]") {
       if (
         firstNameInput.value.toString().trim() &&
         lastNameInput.value.toString().trim() &&
