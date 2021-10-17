@@ -200,7 +200,7 @@ function sendDataToApi() {
       };
       let jsonOrder = JSON.stringify(objectToSend);
       erreurDisplay.innerHTML = ``;
-      fetch("http://localhost:3000/api/teddies/order", {
+      fetch("https://intense-dawn-49463.herokuapp.com/api/teddies/order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

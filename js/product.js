@@ -147,7 +147,7 @@ function addeDataToCart() {
 }
 
 function recupProduct(id) {
-  fetch(`http://localhost:3000/api/teddies/${id}`)
+  fetch(`https://intense-dawn-49463.herokuapp.com/api/teddies/${id}`)
     .then(function (res) {
       if (res.ok) {
         return res.json();

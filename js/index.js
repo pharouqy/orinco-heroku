@@ -1,7 +1,7 @@
 recuperer();
 
 function recuperer() {
-  fetch("http://localhost:3000/api/teddies")
+  fetch("https://intense-dawn-49463.herokuapp.com/api/teddies")
     .then(function (res) {
       if (res.ok) {
         return res.json();
