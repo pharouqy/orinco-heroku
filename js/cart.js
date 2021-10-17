@@ -32,6 +32,7 @@ function diplayDaata() {
       let name = arrayData[data].name;
       let price = arrayData[data].price;
       let quantite = arrayData[data].quantity;
+      const color = arrayData[data].color;
       const picture = arrayData[data].picT;
       const total = price * quantite;
       let totaux = 0;
@@ -48,7 +49,7 @@ function diplayDaata() {
             alt=""
           />
           <div class="media-body">
-            <a href="#" class="d-block text-dark" id="name">${name}</a>
+            <a href="#" class="d-block text-dark name-colors">${name} -//- ${color}</a>
             <small>
               <span class="text-muted"></span>
               <span class="align-text-bottom"></span>
@@ -63,10 +64,10 @@ function diplayDaata() {
       >${price}</td>
       <td class="align-middle p-4">
         <input
-          type="text"
-          class="form-control text-center"
+          type="number"
+          class="form-control text-center quantite"
           value="${quantite}"
-          id="quantite"
+          onchange="SetSelectedValue()"
         />
       </td>
       <td
@@ -87,6 +88,41 @@ function diplayDaata() {
     }
   }
 }
+
+function SetSelectedValue() {
+  let values = document.getElementsByClassName("quantite");
+  for (let i = 0; i < values.length; i++) {
+    let x = values[i].value;
+    console.log("x =>", x);
+    let quantite = arrayData[i].quantity;
+    console.log("qyt =>", quantite);
+    const compare = document.getElementsByClassName("name-colors")[i].innerHTML;
+    console.log("colors-name =>", compare);
+    if (
+      x !== quantite &&
+      arrayData[i].name + " -//- " + arrayData[i].color === compare
+    ) {
+      arrayData[i].quantity = x;
+      localStorage.setItem("data", JSON.stringify(arrayData));
+      location.reload();
+    }
+  }
+}
+/*function SetSelectedValue() {
+  let values = document.getElementsByClassName("quantite");
+  let x;
+  for (let i = 0; i < values.length; i++) {
+    values[i].addEventListener("change", (e) => {
+       x = e.target.value;
+       console.log(x);
+    })
+    console.log(values[i].value)
+  }
+  return x;
+}*/
+
+SetSelectedValue();
+
 function priceTotal() {
   //total price
   let totaux = document.querySelectorAll("td.totaux");
@@ -101,7 +137,7 @@ function priceTotal() {
 
 function clearItem() {
   const btnDelete = document.querySelectorAll(".delete");
-  console.log(btnDelete);
+  //console.log(btnDelete);
   // boucler sur le tableau de btn
   for (let i = 0; i < btnDelete.length; i++) {
     //crée une constante qui recupere le tableau des btn html
@@ -110,19 +146,20 @@ function clearItem() {
       //recuperer le name du produit
       console.log(arrayData);
       let nameDelete = arrayData[i].name;
-      console.log(nameDelete);
+      let colorDelete = arrayData[i].color;
+      console.log("color", colorDelete);
       //utiliser la methode filter qui boucle sur l'array et retourne un tableau des element a ne pas supprimer
-      arrayData = arrayData.filter((el) => el.name !== nameDelete); //retourne un tableau des elements qui ne corespondent pas a nameDelete
+      arrayDataCheck = arrayData.filter(
+        (el) => el.color !== colorDelete || el.name !== nameDelete
+      ); //retourne un tableau des elements qui ne corespondent pas a nameDelete ni à nameColor
+      console.log("array:", arrayDataCheck);
       //mettre le tableau retourner dans le local storage encore une fois
-      localStorage.setItem("data", JSON.stringify(arrayData));
-      window.location.href = "cart.html";
+      localStorage.setItem("data", JSON.stringify(arrayDataCheck));
+      location.reload();
     });
   }
 }
-if (arrayData === []) {
-  localStorage.removeItem("data");
-  erreurDisplay.innerHTML = `<h1>le panier est vide choisissez des produits pour valider votre commande</h1>`;
-}
+
 function clearStorage() {
   //clear localstorage
   if (document.getElementById("X") != null) {
@@ -142,58 +179,56 @@ function validateEmail(email) {
 
 function sendDataToApi() {
   submitInput.addEventListener("click", function (e) {
-    if (arrayData.length !== 0) {
-      if (
-        firstNameInput.value.toString().trim() &&
-        lastNameInput.value.toString().trim() &&
-        validateEmail(emailInput.value).toString().trim() &&
-        cityInput.value.toString().trim() &&
-        emailInput.value.toString().trim() &&
-        arrayData != null
-      ) {
-        //create the object to send
-        let objectToSend = {
-          contact: {
-            firstName: firstNameInput.value,
-            lastName: lastNameInput.value,
-            address: adressInput.value,
-            city: cityInput.value,
-            email: emailInput.value,
-          },
-          products: tableOfIds,
-        };
-        let jsonOrder = JSON.stringify(objectToSend);
-        erreurDisplay.innerHTML = ``;
-        fetch("https://intense-dawn-49463.herokuapp.com/api/teddies/order", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(objectToSend),
+    if (
+      firstNameInput.value.toString().trim() &&
+      lastNameInput.value.toString().trim() &&
+      validateEmail(emailInput.value).toString().trim() &&
+      cityInput.value.toString().trim() &&
+      emailInput.value.toString().trim() &&
+      arrayData != null
+    ) {
+      //create the object to send
+      let objectToSend = {
+        contact: {
+          firstName: firstNameInput.value,
+          lastName: lastNameInput.value,
+          address: adressInput.value,
+          city: cityInput.value,
+          email: emailInput.value,
+        },
+        products: tableOfIds,
+      };
+      let jsonOrder = JSON.stringify(objectToSend);
+      erreurDisplay.innerHTML = ``;
+      fetch("http://localhost:3000/api/teddies/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(objectToSend),
+      })
+        .then(function (res) {
+          if (res.ok) {
+            return res.json();
+          }
         })
-          .then(function (res) {
-            if (res.ok) {
-              return res.json();
-            }
-          })
-          .then((value) => {
-            localStorage.clear();
-            const orderId = localStorage.setItem("orderId", value.orderId);
-            localStorage.setItem("firstName", value.contact["firstName"]);
-            localStorage.setItem("lastName", value.contact["lastName"]);
-            const idRetrieve = localStorage.getItem("orderId");
-            window.location.href = `confirm.html?order=${idRetrieve}`;
-          })
-          .catch(function (erreur) {
-            console.log(erreur);
-          });
-      } else if (!validateEmail(emailInput.value)) {
-        erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp en vérifiant le bon format d'email</h1>`;
-      } else {
-        erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp</h1>`;
-      }
-    } else {
+        .then((value) => {
+          localStorage.clear();
+          const orderId = localStorage.setItem("orderId", value.orderId);
+          localStorage.setItem("firstName", value.contact["firstName"]);
+          localStorage.setItem("lastName", value.contact["lastName"]);
+          const idRetrieve = localStorage.getItem("orderId");
+          window.location.href = `confirm.html?order=${idRetrieve}`;
+        })
+        .catch(function (erreur) {
+          console.log(erreur);
+        });
+    } else if (!validateEmail(emailInput.value)) {
+      erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp en vérifiant le bon format d'email</h1>`;
+    } else if (arrayData == null) {
       erreurDisplay.innerHTML = `<h1>le panier est vide choisissez des produits pour valider votre commande</h1>`;
+    } else {
+      erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp</h1>`;
     }
   });
 }

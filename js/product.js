@@ -5,19 +5,43 @@ const nameTeddy = document.querySelector("h2#nameTeddy");
 const picTeddy = document.getElementById("imgTeddy");
 const qty = document.getElementById("value");
 const priceTeddy = document.getElementById("priceTeddy");
+const color_choice = document.getElementsByTagName("option");
 const id = recupUrl();
 
 recupProduct(recupUrl());
 addeDataToCart();
 cartSum();
 
+/*let valeur_select = document.getElementById("select_colors");
+let x = "chaine";
+valeur_select.addEventListener("change", (e) => {
+  x = e.target.value;
+  console.log("scope", x);
+});
+console.log("global", x);*/
+
+//let valeur_final = valeur_select.options[valeur_select.selectedIndex].value;
+//console.log(valeur_final);
+
+//selectionner la couleur dans une variable
+let e = document.getElementById("select_colors");
+e.setAttribute("onchange", "SetSelectedValue()");
+function SetSelectedValue() {
+  let selected_value = e.options[e.selectedIndex].value;
+  console.log(selected_value);
+  return selected_value;
+}
+SetSelectedValue();
+console.log(SetSelectedValue());
+
 //object product
 class ObjtCart {
-  constructor(name, price, quantity, picT, _id) {
+  constructor(name, price, quantity, picT, color, _id) {
     this.name = name;
     this.price = price;
     this.quantity = quantity;
     this.picT = picT;
+    this.color = color;
     this._id = _id;
   }
 }
@@ -84,6 +108,7 @@ function addeDataToCart() {
       parseFloat(priceTeddy.innerHTML.substr(0, 2)),
       qty.innerHTML,
       picTeddy.src,
+      SetSelectedValue(),
       id
     );
     //Store data in local strorage
@@ -100,7 +125,7 @@ function addeDataToCart() {
         //aditionner les quantité des produit identique dans le local storage
         for (array in arrayData) {
           //Si le nom du produit corespond entre le localstorage et le produit choisie
-          if (nameTeddy.innerHTML === arrayData[array].name) {
+          if (nameTeddy.innerHTML === arrayData[array].name && SetSelectedValue() === arrayData[array].color) {
             //j'aditionne la quantiter entre celle dans le local storage et la quantite du nouveau produit
             //j'actualise la quantite initial du local storage
             arrayData[array].quantity =
@@ -109,9 +134,11 @@ function addeDataToCart() {
             break;
           }
         }
-        if (flagId == false) {//Si le produit n'est pas dupliquer dans local storage
+        if (flagId == false) {
+          //Si le produit n'est pas dupliquer dans local storage
           arrayData.push(newObject);
         }
+
         localStorage.setItem("data", JSON.stringify(arrayData));
         window.location.href = "cart.html";
       }
@@ -120,7 +147,7 @@ function addeDataToCart() {
 }
 
 function recupProduct(id) {
-  fetch(`https://intense-dawn-49463.herokuapp.com/api/teddies/${id}`)
+  fetch(`http://localhost:3000/api/teddies/${id}`)
     .then(function (res) {
       if (res.ok) {
         return res.json();
@@ -143,9 +170,12 @@ function recupProduct(id) {
       for (let color in teddy.colors) {
         const select_colors = document.getElementById("select_colors");
         const option_colors = document.createElement("option");
+        const class1 = document.createAttribute("class");
         option_colors.textContent = teddy.colors[color];
         option_colors.value = teddy.colors[color];
-        select_colors.appendChild(option_colors);
+        class1.value = "option";
+        option_colors.setAttributeNode(class1);
+        select_colors.insertAdjacentElement("beforeend", option_colors);
         displayTeddy.appendChild(select_colors);
       }
     })
