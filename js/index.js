@@ -1,7 +1,9 @@
+const url = "https://intense-dawn-49463.herokuapp.com";
+
 recuperer();
 
 function recuperer() {
-  fetch("https://intense-dawn-49463.herokuapp.com/api/teddies")
+  fetch(`${url}/api/teddies`)
     .then(function (res) {
       if (res.ok) {
         return res.json();

@@ -1,5 +1,5 @@
 let arrayData = JSON.parse(localStorage.getItem("data"));
-
+const url = "https://intense-dawn-49463.herokuapp.com";
 //check input order
 const submitInput = document.getElementById("submit");
 const firstNameInput = document.getElementById("firstName");
@@ -49,7 +49,7 @@ function diplayDaata() {
             alt=""
           />
           <div class="media-body">
-            <a href="#" class="d-block text-dark name-colors">${name} -//- ${color}</a>
+            <a href="#" class="d-block text-dark name-colors" data-product="${name}-${color}">${name} -//- ${color}</a>
             <small>
               <span class="text-muted"></span>
               <span class="align-text-bottom"></span>
@@ -96,11 +96,13 @@ function SetSelectedValue() {
     console.log("x =>", x);
     let quantite = arrayData[i].quantity;
     console.log("qyt =>", quantite);
-    const compare = document.getElementsByClassName("name-colors")[i].innerHTML;
-    console.log("colors-name =>", compare);
+    //const compare = document.getElementsByClassName("name-colors")[i].innerHTML;
+    //console.log("colors-name =>", compare);
+    const dataProduct = document.getElementsByClassName("name-colors")[i].dataset.product;
+    console.log(dataProduct);
     if (
       x !== quantite &&
-      arrayData[i].name + " -//- " + arrayData[i].color === compare
+      arrayData[i].name + "-" + arrayData[i].color === dataProduct
     ) {
       arrayData[i].quantity = x;
       localStorage.setItem("data", JSON.stringify(arrayData));
@@ -179,7 +181,10 @@ function validateEmail(email) {
 
 function sendDataToApi() {
   submitInput.addEventListener("click", function (e) {
-    if (localStorage.getItem("data") != "[]") {
+    if (localStorage.getItem("data") == "[]") {
+      console.log("1");
+      erreurDisplay.innerHTML = `<h1>le panier est vide choisissez des produits pour valider votre commande</h1>`;
+    } else {
       if (
         firstNameInput.value.toString().trim() &&
         lastNameInput.value.toString().trim() &&
@@ -200,7 +205,7 @@ function sendDataToApi() {
         };
         let jsonOrder = JSON.stringify(objectToSend);
         erreurDisplay.innerHTML = ``;
-        fetch("https://intense-dawn-49463.herokuapp.com/api/teddies/order", {
+        fetch(`${url}/api/teddies/order`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -225,11 +230,11 @@ function sendDataToApi() {
           });
       } else if (!validateEmail(emailInput.value)) {
         erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp en vérifiant le bon format d'email</h1>`;
+        console.log("2");
       } else {
         erreurDisplay.innerHTML = `<h1>Remplissez tous les champs svp</h1>`;
+        console.log("3");
       }
-    } else {
-      erreurDisplay.innerHTML = `<h1>le panier est vide choisissez des produits pour valider votre commande</h1>`;
     }
   });
 }

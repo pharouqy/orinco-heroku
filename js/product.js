@@ -7,21 +7,23 @@ const qty = document.getElementById("value");
 const priceTeddy = document.getElementById("priceTeddy");
 const color_choice = document.getElementsByTagName("option");
 const id = recupUrl();
+const url = "https://intense-dawn-49463.herokuapp.com";
 
 recupProduct(recupUrl());
 addeDataToCart();
 cartSum();
 
 /*let valeur_select = document.getElementById("select_colors");
-let x = "chaine";
-valeur_select.addEventListener("change", (e) => {
-  x = e.target.value;
+let x;
+valeur_select.addEventListener("change",async (e) => {
   console.log("scope", x);
-});
-console.log("global", x);*/
+  return x = await e.target.value;
 
-//let valeur_final = valeur_select.options[valeur_select.selectedIndex].value;
-//console.log(valeur_final);
+});
+console.log("global", x);
+
+let valeur_final = valeur_select.options[valeur_select.selectedIndex].value;
+console.log(valeur_final);*/
 
 //selectionner la couleur dans une variable
 let e = document.getElementById("select_colors");
@@ -33,6 +35,7 @@ function SetSelectedValue() {
 }
 SetSelectedValue();
 console.log(SetSelectedValue());
+
 
 //object product
 class ObjtCart {
@@ -125,7 +128,10 @@ function addeDataToCart() {
         //aditionner les quantité des produit identique dans le local storage
         for (array in arrayData) {
           //Si le nom du produit corespond entre le localstorage et le produit choisie
-          if (nameTeddy.innerHTML === arrayData[array].name && SetSelectedValue() === arrayData[array].color) {
+          if (
+            nameTeddy.innerHTML === arrayData[array].name &&
+            SetSelectedValue() === arrayData[array].color
+          ) {
             //j'aditionne la quantiter entre celle dans le local storage et la quantite du nouveau produit
             //j'actualise la quantite initial du local storage
             arrayData[array].quantity =
@@ -147,7 +153,7 @@ function addeDataToCart() {
 }
 
 function recupProduct(id) {
-  fetch(`https://intense-dawn-49463.herokuapp.com/api/teddies/${id}`)
+  fetch(`${url}/api/teddies/${id}`)
     .then(function (res) {
       if (res.ok) {
         return res.json();
@@ -179,7 +185,7 @@ function recupProduct(id) {
         displayTeddy.appendChild(select_colors);
       }
     })
-    .catch(function (err) {
+    .catch(function (_err) {
       console.log("Erreur de réception");
     });
 }
